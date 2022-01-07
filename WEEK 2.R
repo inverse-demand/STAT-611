@@ -26,20 +26,26 @@ a.matrix <- matrix(data = c(7,-7,7,
                    byrow = TRUE)
 a.matrix
 # 1) Name columns and rows as " row 1", "row 2", "row 3","col 1", "col 2", "col 3"
+row.names(a.matrix) <- c("row 1", "row 2", "row 3")
+colnames(a.matrix) <- c("col 1", "col 2", "col 3")
 
+a.matrix
 
 # 2)Extract the second and the third column
 a.matrix[,2:3]
 
 # 3)Extract the third and second row
-a.matrix[1:3]
+a.matrix[c(3,2),]
 
 # 4)get the diagonal data
 diag(a.matrix)
 
 # 5)Please delete the second row
-# 6)Based on question 6, please overwrite the second row of the matrix with c(1,2,3)
+a.matrix <- a.matrix[-2,] # I am guessing to overwrite the original matrix..
 
+# 6)Based on question 6, please overwrite the second row of the matrix with c(1,2,3)
+a.matrix[2,] <- c(1,2,3)
+a.matrix
 
 # 5. Please create an array (with 3*3*2 dimension) shown below, name it as myarray
 
@@ -56,6 +62,15 @@ diag(a.matrix)
 # ROW1 5 10 13
 # ROW2 9 11 14
 # ROW3 3 12 15
+
+# Create two vectors of different lengths.
+v1 <- c(5,9,3)
+v2 <- c()
+v3 <- c()
+
+# Take these vectors as input to the array.
+result <- array(c(vector1,vector2),dim = c(3,3,2))
+print(result)
 
 # 1)please extract the second row of the second layer of myarray
 # 2)Please extract the first rows of both layers of myarray
