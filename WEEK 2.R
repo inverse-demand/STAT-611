@@ -63,15 +63,17 @@ a.matrix
 # ROW2 9 11 14
 # ROW3 3 12 15
 
-# Create two vectors of different lengths.
 v1 <- c(5,9,3)
-v2 <- c()
-v3 <- c()
+v2 <- c(10,11,12,13,14,15)
 
-# Take these vectors as input to the array.
-result <- array(c(vector1,vector2),dim = c(3,3,2))
-print(result)
+myarray <- array(c(v1,v2),dim = c(3,3,2))
+myarray
 
 # 1)please extract the second row of the second layer of myarray
+myarray[2,,2]
+
 # 2)Please extract the first rows of both layers of myarray
+myarray[1,,] #idk if this is correct...
+
 # 3)please extract the third and first element from the second row of the second layer of myarrary
+myarray[2,c(3,1),2]
