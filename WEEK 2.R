@@ -47,7 +47,7 @@ a.matrix <- a.matrix[-2,] # I am guessing to overwrite the original matrix..
 a.matrix[2,] <- c(1,2,3)
 a.matrix
 
-# 5. Please create an array (with 3*3*2 dimension) shown below, name it as myarray
+# 3. Please create an array (with 3*3*2 dimension) shown below, name it as myarray
 
 # , , Matrix1
 # 
@@ -73,7 +73,7 @@ myarray
 myarray[2,,2]
 
 # 2)Please extract the first rows of both layers of myarray
-myarray[1,,] #idk if this is correct...
+myarray[1,,] # row index makes sense, but format-wise idk if this is correct...
 
-# 3)please extract the third and first element from the second row of the second layer of myarrary
+# 3)please extract the third and first element from the second row of the second layer of myarray
 myarray[2,c(3,1),2]
