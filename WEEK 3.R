@@ -61,7 +61,8 @@ govt.p[c(10, 20)] <- "other" ; govt.p[c(2, 3, 5, 7, 8, 13, 14, 17, 18)] <- "nati
 govt.f.f <- factor(x=govt.f, levels=c("M", "F"), ordered=TRUE)
 govt.p.f <- factor(x=govt.p, levels=c("labour", "maori", "greens", "other", "national"), ordered=TRUE)
 
-govt.c <- unlist(list(govt.f.f, govt.p.f))
+# govt.c <- unlist(list(govt.f.f, govt.p.f))
+govt.c <- c(govt.f.f, govt.p.f)
 
 # Order is important in this case because the levels are not in alphabetical order
 
@@ -69,17 +70,25 @@ govt.c <- unlist(list(govt.f.f, govt.p.f))
 #  4.3. Use factor subsetting to do the following:
 #  i. Return the factor vector of chosen parties for only the male
 # participants.
-govt.c[govt.c == "M"]
+govt.p.f[govt.f.f == 'M']
 
 # ii. Return the factor vector of genders for those who chose
 # National.
-govt.c[govt.c == "national"]
+govt.f.f[govt.p.f == "national"]
 
 # 4.4. Another six people joined the survey, with the results
 # c("National","Maori","Maori","Labour","Greens","Labour") for the
 # preferred party and c("M","M","F","F","F","M") as their gender.
 # Combine these results with the original factors from (1.2).
 
+party <- c("national","maori","maori","labour","greens","labour")
+gender <- c("M","M","F","F","F","M")
 
+party.f <- factor(x=party,levels=c("labour", "maori", "greens", "other", "national"), ordered = TRUE)
+gender.f <- factor(x=gender,  levels=c("M", "F"), ordered = TRUE)
 
+govt.p.f <- c(govt.p.f, party.f)
+govt.f.f <- c(govt.f.f, gender.f)
+
+govt.c.s <- c(govt.f.f, govt.p.f)
 
