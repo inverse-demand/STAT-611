@@ -1,0 +1,106 @@
+---
+title: "PROJECTIII"
+author: "Nate Watanabe"
+date: "4/20/2022"
+output: pdf_document
+---
+
+Data Introduction:
+The data source I am using comes from the Spotify API, which is popular music streaming platform. The data set consists of a sample of 5000 songs collected, which live in 6 main playlist categories (of which the song lives on): EDM, Latin, Pop, R&B, Rap, & Rock. The granularity, or level, of data is based on the unique track_id that exists within a playlist. The columns within the data set that characterizes the song is pretty extensive, but consists pretty standard descriptions of a song, such as artist, album, but features corresponding metrics that characterizes the song, such as speechiness, liveness, dancibility, and so on.
+
+Additional information on this particular dataset can be found through this link here: https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-01-21/readme.md
+
+Problem statement:
+A music label has reached out to Spotify to better understand common traits that genres have to help and influence their music writers to follow a common theme. As a business stakeholder, they want to understand the differences in genre, such as, is dancibility, for example, a trait of more common in EDM music vs Rock? what is the average bpm, for say, Pop music? What is the mean, median, etc of each genre for each song characteristic?
+
+Approach (addressing the problem statement):
+There are two main parts to showcase this. I can essentially create a histogram to check the distribution of various song attributed (danceability, speechiness, etc) by each song genre, which will help identify how the information is better summarized.
+
+I will then create a loop function to calculate corresponding mean, median for each song characteristic, grouped by genre.
+
+```{r}
+ss <- read.csv("C:/Users/Shoya/Downloads/spotify_songs.csv")
+head(ss[with(ss, order(track_name)),][c(2, 10, 12:13, 15, 17:22)], n = 50)
+# Looks like songs can technically encompass multiple playlist genres
+# To conduct the analysis correctly, need to make sure that the values are actually distinct (remove duplicates)
+ss2 <- unique(ss[c(2, 10, 12:13, 15, 17:22)])
+head(ss2[with(ss2, order(track_name)),], n = 50)
+nrow(ss2)
+
+```
+
+When taking a look at the data set, it does appear that the proper level of granularity of what I need, which is the song/playlist genre level, is not quite where I want it. With this in mind, I needed to essentially obtain the columns of interest, which are just the song names, playlist genre, and corresponding characteristic metrics, and use the unique() function to return those unique values. I can see that the number of unique values of the data frame are reduced to 29869.
+
+The ss2 data frame looks like is the level I want. Now onto the actual analysis portion.
+
+```{r}
+# Now to use filtered dataframe (ss2)
+
+Mode <- function(x) {
+  y <- unique(x)
+  y[which.max(tabulate(match(x, y)))]
+}
+
+hist_plot <- function(df=ss2){
+  data = df[-1]
+  genre_mode <- aggregate(data[-1], list(genre = data$playlist_genre), Mode)
+  genre_mode$aggregation <- 'mode'
+  genre_mean <- aggregate(data[-1], list(genre = data$playlist_genre), mean)
+  genre_mean$aggregation <- 'mean'
+  genre_median <- aggregate(data[-1], list(genre =data$playlist_genre), median)
+  genre_median$aggregation <- 'median'
+  table <- do.call("rbind", list(genre_mode, genre_mean, genre_median))
+  
+  metric <- colnames(data[-1])
+  genre <- unique(data[[1]])
+  for (me in metric){
+    par(mfrow=c(3,2))
+    for (ge in genre){
+      name <- sprintf("Genre: %s - Histogram of %s", ge, me)
+      x <- sprintf("%s, %s", me, ifelse(me == "tempo",
+                                           "Beats Per Minute",
+                                           "Scale of 0 to 1"))
+      hist(df[df$playlist_genre==ge, me], main = name, xlab = x, col = 'grey', border = 'grey')
+      abline(v=genre_mode[genre_mode$genre == ge, me], col='blue', lty = 'dashed')
+      abline(v=genre_mean[genre_mean$genre == ge, me], col='red', lty = 'dashed')
+      abline(v=genre_median[genre_median$genre == ge, me], col='green', lty = 'dashed')
+      legend(
+        "topright", 
+        lty=c('dashed','dashed','dashed'),
+        col=c("blue", "red", "green"), 
+        legend = c(paste("Mode", genre_mode[genre_mode$genre == ge, me],sep = ": "),
+                   paste("Mean", round(genre_mean[genre_mean$genre == ge, me], 3),sep = ": "),
+                   paste("Median", genre_median[genre_median$genre == ge, me],sep = ": ")),
+        bg="transparent"
+      )
+    }
+    #dev.new()
+  }
+  return(table)
+} # create a nested for loop, one for genre, and one for each KPI
+
+final <- hist_plot()
+print(final)
+
+
+
+```
+
+The output provides histograms, including some summary metrics, of each metric of interest by genre. This view will help visually compare the differences between each genre. The returned data frame shows the summary statistics of each genre.
+
+Analysis:
+Taking a look at the output, from order of metric...
+
+Rap tends to be positively skewed when assessing dance as a metric, with a median of .734 on a scale of 0-1. Meanwhile, rock has the most moderate danceability in comparison to other genres
+
+r&b has relatively moderate energy, whilst edm has the highest, and tends to be positively skewed as well (this intuition makes sense).
+
+Taking a look at tempo, which is measure as beats per minute, results are pretty interesting in my opinion. r&b has a relatively lower temp in comparison to the other genres. Rock music, noticeably, tends to have a faster tempo. What is interesting is pop and, more specifically, edm. Both have rather large frequencies within a certain bpm. This, retrospectively makes sense considering a lot of pop music uses similarly manufactured beats that are pretty known to be reused. EDM, in particular follows a very narrow range of bpm which, likewise, makes sense due to the more manufactured component of how the music is produced.
+
+Implications (conclusion):
+
+
+
+
+Limitations:
+Data set was only a very small sample of the total amount of songs (populations) that Spotify hosts. I would ideally like to increase this sample, and better randomize to have better confidence in the results of this analysis.
