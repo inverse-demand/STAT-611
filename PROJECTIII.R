@@ -31,6 +31,7 @@ hist_plot <- function(df=ss2){
   metric <- colnames(data[-1])
   genre <- unique(data[[1]])
   for (me in metric){
+    windows.options(width=10, height=10)
     par(mfrow=c(3,2))
     for (ge in genre){
       name <- sprintf("Genre: %s - Histogram of %s", ge, me)
